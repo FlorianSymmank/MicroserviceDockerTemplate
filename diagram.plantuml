@@ -1,0 +1,31 @@
+@startuml
+[React_Frontend] --> [Apigateway]
+[Apigateway] --> [Ping_Microservice]
+[Ping_Microservice] <-> [RabbitMQ]
+[Apigateway] --> [Pong_Microservice]
+[Pong_Microservice] <--> [RabbitMQ]
+
+note left of [React_Frontend]
+    Port: 300
+end note
+
+note left of [Apigateway]
+    Port: 8080
+    Handels Routes
+end note
+
+note left of [RabbitMQ]
+    Port: 5672, 15672
+    Queues: Ping, Pong 
+end note
+
+note right of [Ping_Microservice]
+    Port: 8081
+    Endpoint: Ping -> Produces Item in Ping Queue
+    Consumes: Pong Queue
+end note
+
+note left of [Pong_Microservice]
+    Port: 8082
+    Consumes: Ping Queue -> Produces Item in Pong Queue
+end note
