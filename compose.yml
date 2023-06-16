@@ -1,0 +1,68 @@
+services:
+  frontend:
+    container_name: frontend
+    build:
+      context: demo-frontend
+      dockerfile: Dockerfile
+    ports:
+      - 300:80
+    networks:
+      - proxynet
+  apigateway:
+    container_name: apigateway
+    command: java -jar target/apigateway-0.0.1-SNAPSHOT.jar
+    build:
+      context: apigateway
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    networks:
+      - proxynet
+      - internal
+
+  rabbitmq-container:
+    image: rabbitmq:3.11-management
+    hostname: rabbitmq-container
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    networks:
+      - internal
+
+  ping:
+    container_name: ping
+    command: java -jar target/demo-0.0.1-SNAPSHOT.jar
+    build:
+      context: ping
+      dockerfile: Dockerfile
+    ports:
+      - "8081:8080"
+    depends_on:
+      - rabbitmq-container
+    networks:
+      - internal
+    environment:
+      - spring_rabbitmq_host=rabbitmq-container
+      - spring_rabbitmq_port=5672
+
+  pong:
+    container_name: pong
+    command: java -jar target/demo-0.0.1-SNAPSHOT.jar
+    build:
+      context: pong
+      dockerfile: Dockerfile
+    ports:
+      - "8082:8080"
+    depends_on:
+      - rabbitmq-container
+    networks:
+      - internal
+    environment:
+      - spring_rabbitmq_host=rabbitmq-container
+      - spring_rabbitmq_port=5672
+
+networks:
+  proxynet:
+    name: react-spring
+  internal:
+    name: internal

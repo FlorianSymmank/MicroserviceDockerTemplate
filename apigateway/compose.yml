@@ -1,0 +1,15 @@
+services:
+  apigateway:
+    container_name: apigateway
+    command: java -jar target/apigateway-0.0.1-SNAPSHOT.jar
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    networks:
+      - proxynet
+
+networks:
+  proxynet:
+    name: react-spring

@@ -1,0 +1,14 @@
+services:
+  frontend:
+    container_name: frontend
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 300:80
+    networks:
+      - proxynet
+
+networks:
+  proxynet:
+    name: react-spring

@@ -1,0 +1,1 @@
+run all projects `docker-compose up --build`

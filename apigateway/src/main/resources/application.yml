@@ -1,0 +1,16 @@
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: ping_route
+          uri: http://ping:8081
+          predicates:
+            - Path=/ping/{path}
+      default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins: "http://localhost:300"
+            allowedHeaders: "*"
+            allowedMethods: "*"
